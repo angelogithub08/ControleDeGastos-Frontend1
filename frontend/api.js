@@ -1,11 +1,10 @@
-// Serviço de comunicação com a API
+
 class ApiService {
   constructor() {
     this.baseURL = "http://127.0.0.1:8000";
     this.token = localStorage.getItem("access_token");
   }
 
-  // Configurar token de autenticação
   setToken(token) {
     this.token = token;
     if (token) {
@@ -15,7 +14,7 @@ class ApiService {
     }
   }
 
-  // Obter headers padrão
+
   getHeaders(includeAuth = true) {
     const headers = {
       "Content-Type": "application/json",
@@ -28,7 +27,7 @@ class ApiService {
     return headers;
   }
 
-  // Método genérico para fazer requisições
+
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     const config = {
@@ -39,9 +38,8 @@ class ApiService {
     try {
       const response = await fetch(url, config);
 
-      // Se não autorizado, verificar se é login ou operação autenticada
+  
       if (response.status === 401) {
-        // Se for endpoint de login, não fazer reload - deixar o erro ser tratado
         if (endpoint === "/auth/login") {
           const data = await response.json();
           const error = new Error(data.detail || "Credenciais inválidas");
@@ -50,14 +48,14 @@ class ApiService {
           error.data = data;
           throw error;
         } else {
-          // Para outras operações, limpar token e redirecionar para login
+    
           this.setToken(null);
           window.location.reload();
           return null;
         }
       }
 
-      // Se não há conteúdo (204), retornar sucesso
+  
       if (response.status === 204) {
         return { success: true };
       }
@@ -65,7 +63,7 @@ class ApiService {
       const data = await response.json();
 
       if (!response.ok) {
-        // Criar erro com informações detalhadas
+     
         const error = new Error(
           data.detail || `HTTP error! status: ${response.status}`
         );
@@ -220,7 +218,6 @@ class ApiService {
     return !!this.token;
   }
 
-  // Método para testar conectividade com a API
   async testConnection() {
     try {
       const response = await this.request("/");
@@ -232,10 +229,8 @@ class ApiService {
   }
 }
 
-// Instância global do serviço de API
 const api = new ApiService();
 
-// Utilitários para formatação
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -263,7 +258,6 @@ const formatDateOnly = (dateString) => {
   }).format(date);
 };
 
-// Função para mostrar notificações
 function showNotification(message, type = "success") {
   const notification = document.createElement("div");
   let bgColor, duration;
@@ -275,11 +269,11 @@ function showNotification(message, type = "success") {
       break;
     case "error":
       bgColor = "bg-red-500";
-      duration = 6000; // Erros ficam mais tempo
+      duration = 6000; 
       break;
     case "warning":
       bgColor = "bg-yellow-500";
-      duration = 8000; // Avisos ficam ainda mais tempo
+      duration = 8000; 
       break;
     case "info":
       bgColor = "bg-blue-500";
@@ -306,7 +300,6 @@ function showNotification(message, type = "success") {
 
   document.body.appendChild(notification);
 
-  // Remover automaticamente após o tempo especificado
   setTimeout(() => {
     if (document.body.contains(notification)) {
       notification.classList.add("opacity-0");
@@ -319,7 +312,6 @@ function showNotification(message, type = "success") {
   }, duration);
 }
 
-// Função para mostrar/ocultar loading overlay
 function showLoading(show = true) {
   const overlay = document.getElementById("loadingOverlay");
   if (overlay) {
@@ -333,14 +325,12 @@ function showLoading(show = true) {
   }
 }
 
-// Função para lidar com erros da API
 function handleApiError(error, defaultMessage = "Ocorreu um erro inesperado") {
   console.error("API Error:", error);
 
   let message = defaultMessage;
   let type = "error";
 
-  // Verificar se é um erro da API com status específico
   if (error.status) {
     switch (error.status) {
       case 400:
@@ -356,7 +346,6 @@ function handleApiError(error, defaultMessage = "Ocorreu um erro inesperado") {
         message = error.message || "Recurso não encontrado";
         break;
       case 409:
-        // Conflito - geralmente integridade referencial
         message = error.message || "Operação não permitida devido a conflito";
         type = "warning";
         break;
@@ -376,7 +365,6 @@ function handleApiError(error, defaultMessage = "Ocorreu um erro inesperado") {
   showNotification(message, type);
 }
 
-// Exportar para uso global
 window.api = api;
 window.formatCurrency = formatCurrency;
 window.formatDate = formatDate;
