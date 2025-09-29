@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Controle de Gastos</title>
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuração personalizada do Tailwind -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#f0f9ff",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Tela de Login -->
+    <div
+      id="loginScreen"
+      class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+    >
+      <div class="max-w-md w-full space-y-8">
+        <div>
+          <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            💰 Controle de Gastos
+          </h2>
+          <p class="mt-2 text-center text-sm text-gray-600">
+            Faça login para acessar sua conta
+          </p>
+        </div>
+
+        <!-- Tabs Login/Registro -->
+        <div class="flex border-b border-gray-200">
+          <button
+            id="loginTab"
+            class="flex-1 py-2 px-4 text-center border-b-2 border-primary-500 text-primary-600 font-medium"
+          >
+            Login
+          </button>
+          <button
+            id="registerTab"
+            class="flex-1 py-2 px-4 text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700"
+          >
+            Registro
+          </button>
+        </div>
+
+        <!-- Formulário de Login -->
+        <form id="loginForm" class="mt-8 space-y-6">
+          <div class="space-y-4">
+            <div>
+              <label
+                for="loginEmail"
+                class="block text-sm font-medium text-gray-700"
+                >Email</label
+              >
+              <input
+                id="loginEmail"
+                name="email"
+                type="email"
+                required
+                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="seu@email.com"
+              />
+            </div>
+            <div>
+              <label
+                for="loginPassword"
+                class="block text-sm font-medium text-gray-700"
+                >Senha</label
+              >
+              <input
+                id="loginPassword"
+                name="password"
+                type="password"
+                required
+                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Sua senha"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              Entrar
+            </button>
+          </div>
+        </form>
+
+        <!-- Formulário de Registro -->
+        <form id="registerForm" class="mt-8 space-y-6 hidden">
+          <div class="space-y-4">
+            <div>
+              <label
+                for="registerName"
+                class="block text-sm font-medium text-gray-700"
+                >Nome</label
+              >
+              <input
+                id="registerName"
+                name="name"
+                type="text"
+                required
+                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Seu nome completo"
+              />
+            </div>
+            <div>
+              <label
+                for="registerEmail"
+                class="block text-sm font-medium text-gray-700"
+                >Email</label
+              >
+              <input
+                id="registerEmail"
+                name="email"
+                type="email"
+                required
+                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="seu@email.com"
+              />
+            </div>
+            <div>
+              <label
+                for="registerPassword"
+                class="block text-sm font-medium text-gray-700"
+                >Senha</label
+              >
+              <input
+                id="registerPassword"
+                name="password"
+                type="password"
+                required
+                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Sua senha"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              Registrar
+            </button>
+          </div>
+        </form>
+
+        <!-- Mensagens de erro -->
+        <div
+          id="authError"
+          class="hidden mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md"
+        >
+          <p id="authErrorMessage"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aplicação Principal (oculta inicialmente) -->
+    <div id="mainApp" class="hidden">
+      <!-- Header -->
+      <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between items-center h-16">
+            <div class="flex items-center">
+              <h1 class="text-xl font-semibold text-gray-900">
+                💰 Controle de Gastos
+              </h1>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="flex items-center space-x-2">
+                <span id="userWelcome" class="text-sm text-gray-600"></span>
+                <button
+                  id="editUserBtn"
+                  class="text-gray-400 hover:text-blue-500 transition-colors"
+                  title="Editar perfil"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+              <button
+                id="logoutBtn"
+                class="text-gray-500 hover:text-gray-700 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Dashboard Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <!-- Total de Receitas -->
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="p-2 bg-green-100 rounded-lg">
+                <svg
+                  class="w-6 h-6 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Total Receitas</p>
+                <p
+                  id="totalIncome"
+                  class="text-2xl font-semibold text-green-600"
+                >
+                  R$ 0,00
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total de Despesas -->
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="p-2 bg-red-100 rounded-lg">
+                <svg
+                  class="w-6 h-6 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M20 12H4"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Total Despesas</p>
+                <p
+                  id="totalExpenses"
+                  class="text-2xl font-semibold text-red-600"
+                >
+                  R$ 0,00
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Saldo -->
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="p-2 bg-blue-100 rounded-lg">
+                <svg
+                  class="w-6 h-6 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Saldo</p>
+                <p id="balance" class="text-2xl font-semibold text-gray-900">
+                  R$ 0,00
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Número de Transações -->
+          <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center">
+              <div class="p-2 bg-yellow-100 rounded-lg">
+                <svg
+                  class="w-6 h-6 text-yellow-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Transações</p>
+                <p
+                  id="transactionCount"
+                  class="text-2xl font-semibold text-gray-900"
+                >
+                  0
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+          <h3 class="text-lg font-medium text-gray-900 mb-4">Filtros</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label
+                for="filterCategory"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Tipo</label
+              >
+              <select
+                id="filterCategory"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">Todos os tipos</option>
+                <option value="INCOME">Receitas</option>
+                <option value="EXPENSE">Despesas</option>
+              </select>
+            </div>
+            <div>
+              <label
+                for="filterType"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Categoria</label
+              >
+              <select
+                id="filterType"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">Todas as categorias</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button
+                id="clearFilters"
+                class="w-full px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md font-medium transition-colors"
+              >
+                Limpar Filtros
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transactions List -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+              <h2 class="text-lg font-medium text-gray-900">Transações</h2>
+              <div class="flex space-x-3">
+                <button
+                  id="addTransactionBtn"
+                  class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                    ></path>
+                  </svg>
+                  <span>Nova Transação</span>
+                </button>
+                <button
+                  id="manageTypesBtn"
+                  class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  <span>Gerenciar Tipos</span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="p-6">
+            <div id="transactionsList" class="space-y-4">
+              <!-- Loading state -->
+              <div id="loadingState" class="text-center py-8">
+                <div
+                  class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"
+                ></div>
+                <p class="mt-2 text-gray-500">Carregando transações...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal para Nova/Editar Transação -->
+    <div
+      id="transactionModal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3
+            id="transactionModalTitle"
+            class="text-lg font-medium text-gray-900"
+          >
+            Nova Transação
+          </h3>
+        </div>
+        <form id="transactionForm" class="p-6 space-y-4">
+          <input type="hidden" id="transactionId" name="id" />
+          <div>
+            <label
+              for="transactionTypeFilter"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Tipo</label
+            >
+            <select
+              id="transactionTypeFilter"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              <option value="">Todos os tipos</option>
+              <option value="INCOME">Receita</option>
+              <option value="EXPENSE">Despesa</option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="transactionTypeId"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Categoria</label
+            >
+            <select
+              id="transactionTypeId"
+              name="transaction_type_id"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            >
+              <option value="">Selecione um tipo</option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="transactionValue"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Valor (R$)</label
+            >
+            <input
+              type="text"
+              id="transactionValue"
+              name="value"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              placeholder="R$ 0,00"
+            />
+          </div>
+        </form>
+        <div
+          class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rounded-b-lg"
+        >
+          <button
+            id="cancelTransactionBtn"
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            Cancelar
+          </button>
+          <button
+            id="saveTransactionBtn"
+            type="submit"
+            form="transactionForm"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-500 border border-transparent rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para Gerenciar Tipos de Transação -->
+    <div
+      id="typesModal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div
+        class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden"
+      >
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">
+            Gerenciar Tipos de Transação
+          </h3>
+        </div>
+
+        <!-- Formulário para novo tipo -->
+        <div class="p-6 border-b border-gray-200">
+          <h4 class="text-md font-medium text-gray-900 mb-4">
+            Adicionar Novo Tipo
+          </h4>
+          <form id="typeForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <input type="hidden" id="typeId" name="id" />
+            <div>
+              <label
+                for="typeName"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Nome</label
+              >
+              <input
+                type="text"
+                id="typeName"
+                name="name"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                placeholder="Ex: Salário, Alimentação"
+              />
+            </div>
+            <div>
+              <label
+                for="typeCategory"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Categoria</label
+              >
+              <select
+                id="typeCategory"
+                name="type"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              >
+                <option value="">Selecione</option>
+                <option value="INCOME">Receita</option>
+                <option value="EXPENSE">Despesa</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button
+                type="submit"
+                class="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-md font-medium transition-colors"
+              >
+                <span id="typeFormSubmitText">Adicionar</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Lista de tipos existentes -->
+        <div class="p-6 max-h-96 overflow-y-auto">
+          <h4 class="text-md font-medium text-gray-900 mb-4">
+            Tipos Existentes
+          </h4>
+
+          <!-- Seção de Receitas -->
+          <div class="mb-6">
+            <h5
+              class="text-sm font-semibold text-green-700 mb-3 flex items-center"
+            >
+              <svg
+                class="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                ></path>
+              </svg>
+              Receitas
+            </h5>
+            <div
+              id="incomeTypesList"
+              class="space-y-2 pl-4 border-l-2 border-green-200"
+            >
+              <!-- Income types will be loaded here -->
+            </div>
+          </div>
+
+          <!-- Seção de Despesas -->
+          <div>
+            <h5
+              class="text-sm font-semibold text-red-700 mb-3 flex items-center"
+            >
+              <svg
+                class="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 12H4"
+                ></path>
+              </svg>
+              Despesas
+            </h5>
+            <div
+              id="expenseTypesList"
+              class="space-y-2 pl-4 border-l-2 border-red-200"
+            >
+              <!-- Expense types will be loaded here -->
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 flex justify-end rounded-b-lg">
+          <button
+            id="closeTypesBtn"
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            Fechar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para Editar Usuário -->
+    <div
+      id="userModal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h3 class="text-lg font-medium text-gray-900">Editar Perfil</h3>
+        </div>
+        <form id="userForm" class="px-6 py-4">
+          <input type="hidden" id="userId" name="id" />
+
+          <div class="space-y-4">
+            <div>
+              <label
+                for="userName"
+                class="block text-sm font-medium text-gray-700"
+              >
+                Nome
+              </label>
+              <input
+                type="text"
+                id="userName"
+                name="name"
+                required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Seu nome completo"
+              />
+            </div>
+
+            <div>
+              <label
+                for="userEmail"
+                class="block text-sm font-medium text-gray-700"
+              >
+                E-mail
+              </label>
+              <input
+                type="email"
+                id="userEmail"
+                name="email"
+                required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="seu@email.com"
+              />
+            </div>
+
+            <div>
+              <label
+                for="userPassword"
+                class="block text-sm font-medium text-gray-700"
+              >
+                Nova Senha (deixe em branco para manter a atual)
+              </label>
+              <input
+                type="password"
+                id="userPassword"
+                name="password"
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Nova senha (opcional)"
+              />
+            </div>
+
+            <div>
+              <label
+                for="userPasswordConfirm"
+                class="block text-sm font-medium text-gray-700"
+              >
+                Confirmar Nova Senha
+              </label>
+              <input
+                type="password"
+                id="userPasswordConfirm"
+                name="passwordConfirm"
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Confirme a nova senha"
+              />
+            </div>
+          </div>
+
+          <div
+            class="flex justify-end space-x-3 mt-6 pt-4 border-t border-gray-200"
+          >
+            <button
+              id="cancelUserBtn"
+              type="button"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              Cancelar
+            </button>
+            <button
+              id="saveUserBtn"
+              type="submit"
+              class="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            >
+              <span id="userFormSubmitText">Salvar</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div
+      id="loadingOverlay"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50"
+    >
+      <div class="bg-white rounded-lg p-6 shadow-xl">
+        <div class="flex items-center space-x-3">
+          <div
+            class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500"
+          ></div>
+          <span class="text-gray-700">Processando...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="api.js"></script>
+    <script src="users.js"></script>
+    <script src="transaction-types.js"></script>
+    <script src="transactions.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

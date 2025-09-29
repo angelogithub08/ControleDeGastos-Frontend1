@@ -1,0 +1,150 @@
+/* Estilos personalizados para o Controle de Gastos */
+
+/* Animações personalizadas */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Classes de animação */
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Estilos para o modal */
+.modal-enter {
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Hover effects personalizados */
+.expense-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Estilos para categorias */
+.category-alimentacao {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.category-transporte {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.category-saude {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.category-educacao {
+    background-color: #e0e7ff;
+    color: #3730a3;
+}
+
+.category-lazer {
+    background-color: #fce7f3;
+    color: #be185d;
+}
+
+.category-casa {
+    background-color: #f3e8ff;
+    color: #7c2d12;
+}
+
+.category-outros {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+/* Responsividade personalizada */
+@media (max-width: 640px) {
+    .expense-item {
+        padding: 1rem;
+    }
+    
+    .expense-item .flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+/* Estilos para inputs com foco */
+input:focus,
+select:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Empty state styling */
+.empty-state {
+    opacity: 0.8;
+}
+
+/* Smooth transitions */
+* {
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Custom scrollbar para webkit browsers */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+    }
+    
+    .shadow {
+        box-shadow: none !important;
+        border: 1px solid #e5e7eb !important;
+    }
+}
