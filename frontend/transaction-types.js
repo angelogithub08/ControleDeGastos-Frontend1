@@ -1,6 +1,5 @@
 // ==================== GERENCIAMENTO DE TIPOS DE TRANSAÇÃO ====================
 
-// Estado dos tipos de transação
 let transactionTypes = [];
 
 // ==================== CARREGAMENTO DE DADOS ====================
@@ -24,15 +23,15 @@ function updateTransactionTypeSelects() {
     return;
   }
 
-  // Ordenar tipos por nome
+  
   const sortedTypes = [...transactionTypes].sort((a, b) =>
     a.name.localeCompare(b.name)
   );
 
-  // Atualizar select do modal de transação
+
   updateModalTransactionTypeSelect(sortedTypes);
 
-  // Atualizar select de filtro baseado na categoria selecionada
+
   updateFilterTypeSelect(sortedTypes);
 }
 
@@ -45,10 +44,10 @@ function updateFilterTypeSelect(sortedTypes = null) {
     [...transactionTypes].sort((a, b) => a.name.localeCompare(b.name));
   const selectedCategory = filterCategory.value;
 
-  // Limpar select
+
   filterType.innerHTML = '<option value="">Todas as categorias</option>';
 
-  // Filtrar tipos baseado na categoria selecionada
+
   const filteredTypes = selectedCategory
     ? types.filter((type) => type.type === selectedCategory)
     : types;
@@ -68,13 +67,13 @@ function updateModalTransactionTypeSelect(sortedTypes = null) {
   );
 
   try {
-    // Verificar se transactionTypes está definido e é um array
+   
     if (
       !transactionTypes ||
       !Array.isArray(transactionTypes) ||
       transactionTypes.length === 0
     ) {
-      // Limpar select e adicionar opção padrão
+    
       if (transactionTypeId) {
         transactionTypeId.innerHTML =
           '<option value="">Selecione uma categoria</option>';
@@ -82,12 +81,12 @@ function updateModalTransactionTypeSelect(sortedTypes = null) {
       return;
     }
 
-    // Verificar se sortedTypes é válido, caso contrário usar transactionTypes
+ 
     let types = [];
     if (sortedTypes && Array.isArray(sortedTypes) && sortedTypes.length > 0) {
       types = sortedTypes;
     } else {
-      // Criar cópia segura e ordenar
+    
       types = transactionTypes.slice().sort((a, b) => {
         if (a && b && a.name && b.name) {
           return a.name.localeCompare(b.name);
@@ -96,7 +95,7 @@ function updateModalTransactionTypeSelect(sortedTypes = null) {
       });
     }
 
-    // Verificação final de segurança
+   
     if (!Array.isArray(types) || types.length === 0) {
       if (transactionTypeId) {
         transactionTypeId.innerHTML =
@@ -105,24 +104,23 @@ function updateModalTransactionTypeSelect(sortedTypes = null) {
       return;
     }
 
-    // Obter filtro selecionado de forma segura
     const selectedFilter =
       transactionTypeFilter && transactionTypeFilter.value
         ? transactionTypeFilter.value
         : "";
 
-    // Limpar select
+
     if (transactionTypeId) {
       transactionTypeId.innerHTML =
         '<option value="">Selecione uma categoria</option>';
     }
 
-    // Filtrar tipos baseado na seleção
+   
     const filteredTypes = selectedFilter
       ? types.filter((type) => type && type.type === selectedFilter)
       : types;
 
-    // Adicionar opções ao select
+  
     if (filteredTypes && Array.isArray(filteredTypes)) {
       filteredTypes.forEach((type) => {
         if (type && type.id && type.name && transactionTypeId) {
@@ -135,7 +133,7 @@ function updateModalTransactionTypeSelect(sortedTypes = null) {
     }
   } catch (error) {
     console.error("Erro em updateModalTransactionTypeSelect:", error);
-    // Fallback seguro
+   
     if (transactionTypeId) {
       transactionTypeId.innerHTML =
         '<option value="">Selecione uma categoria</option>';
@@ -187,11 +185,11 @@ function renderTypesList(types) {
     return;
   }
 
-  // Separar tipos por categoria
+ 
   const incomeTypes = types.filter((type) => type.type === "INCOME");
   const expenseTypes = types.filter((type) => type.type === "EXPENSE");
 
-  // Renderizar receitas
+ 
   if (incomeTypes.length === 0) {
     incomeTypesList.innerHTML =
       '<p class="text-gray-500 text-center py-4 text-sm">Nenhuma receita cadastrada</p>';
@@ -202,7 +200,7 @@ function renderTypesList(types) {
     incomeTypesList.innerHTML = incomeHTML;
   }
 
-  // Renderizar despesas
+
   if (expenseTypes.length === 0) {
     expenseTypesList.innerHTML =
       '<p class="text-gray-500 text-center py-4 text-sm">Nenhuma despesa cadastrada</p>';
@@ -255,20 +253,20 @@ async function handleTypeSubmit(e) {
     const typeData = { name, type };
 
     if (id) {
-      // Atualizar tipo existente
+     
       await api.updateTransactionType(parseInt(id), typeData);
       showNotification("Tipo atualizado com sucesso!");
     } else {
-      // Criar novo tipo
+     
       await api.createTransactionType(typeData);
       showNotification("Tipo criado com sucesso!");
     }
 
-    // Recarregar dados
+   
     await loadTransactionTypes();
     await loadTypesInModal();
 
-    // Resetar formulário
+  
     typeForm.reset();
     typeId.value = "";
     typeFormSubmitText.textContent = "Adicionar";
@@ -279,7 +277,7 @@ async function handleTypeSubmit(e) {
   }
 }
 
-// Função global para editar tipo
+
 window.editType = async function (id) {
   const typeId = document.getElementById("typeId");
   const typeName = document.getElementById("typeName");
@@ -298,7 +296,7 @@ window.editType = async function (id) {
   }
 };
 
-// Função global para excluir tipo
+
 window.deleteType = async function (id) {
   // Encontrar o tipo para mostrar o nome na confirmação
   const type = transactionTypes.find((t) => t.id === id);
@@ -341,42 +339,42 @@ function setupTransactionTypesEventListeners() {
   );
   const filterCategory = document.getElementById("filterCategory");
 
-  // Botão para abrir modal de tipos
+  
   manageTypesBtn.addEventListener("click", openTypesModal);
 
-  // Modal de tipos
+ 
   closeTypesBtn.addEventListener("click", closeTypesModal);
   typeForm.addEventListener("submit", handleTypeSubmit);
 
-  // Fechar modal clicando fora
+ 
   typesModal.addEventListener("click", (e) => {
     if (e.target === typesModal) closeTypesModal();
   });
 
-  // Filtro de tipo no modal de transação
+ 
   transactionTypeFilter.addEventListener("change", function () {
-    // Verificar se os dados estão carregados antes de atualizar
+   
     if (transactionTypes && transactionTypes.length > 0) {
       updateModalTransactionTypeSelect();
     } else {
       console.warn("Tentativa de filtrar tipos antes do carregamento");
-      // Limpar select e mostrar opção padrão
+      
       const transactionTypeId = document.getElementById("transactionTypeId");
       transactionTypeId.innerHTML =
         '<option value="">Selecione uma categoria</option>';
     }
   });
 
-  // Filtro de categoria
+  
   filterCategory.addEventListener("change", function () {
-    // Atualizar o select de tipos baseado na categoria selecionada
+    
     updateFilterTypeSelect();
-    // Aplicar filtros
+   
     applyFilters();
   });
 }
 
-// Expor funções globais necessárias
+
 window.transactionTypes = transactionTypes;
 window.loadTransactionTypes = loadTransactionTypes;
 window.updateTransactionTypeSelects = updateTransactionTypeSelects;
