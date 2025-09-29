@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Controle de Gastos</title>
 
-    <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Configuração personalizada do Tailwind -->
     <script>
       tailwind.config = {
         theme: {
@@ -26,11 +24,10 @@
       };
     </script>
 
-    <!-- CSS personalizado -->
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="bg-gray-50 min-h-screen">
-    <!-- Tela de Login -->
+
     <div
       id="loginScreen"
       class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
@@ -45,7 +42,7 @@
           </p>
         </div>
 
-        <!-- Tabs Login/Registro -->
+
         <div class="flex border-b border-gray-200">
           <button
             id="loginTab"
@@ -61,7 +58,7 @@
           </button>
         </div>
 
-        <!-- Formulário de Login -->
+
         <form id="loginForm" class="mt-8 space-y-6">
           <div class="space-y-4">
             <div>
@@ -106,7 +103,7 @@
           </div>
         </form>
 
-        <!-- Formulário de Registro -->
+    
         <form id="registerForm" class="mt-8 space-y-6 hidden">
           <div class="space-y-4">
             <div>
@@ -166,7 +163,7 @@
           </div>
         </form>
 
-        <!-- Mensagens de erro -->
+     
         <div
           id="authError"
           class="hidden mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md"
@@ -176,9 +173,9 @@
       </div>
     </div>
 
-    <!-- Aplicação Principal (oculta inicialmente) -->
+   
     <div id="mainApp" class="hidden">
-      <!-- Header -->
+    
       <header class="bg-white shadow-sm border-b">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between items-center h-16">
@@ -221,11 +218,11 @@
         </div>
       </header>
 
-      <!-- Main Content -->
+ 
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Dashboard Cards -->
+     
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <!-- Total de Receitas -->
+       
           <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
               <div class="p-2 bg-green-100 rounded-lg">
@@ -255,7 +252,7 @@
             </div>
           </div>
 
-          <!-- Total de Despesas -->
+      
           <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
               <div class="p-2 bg-red-100 rounded-lg">
@@ -285,7 +282,7 @@
             </div>
           </div>
 
-          <!-- Saldo -->
+       
           <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
               <div class="p-2 bg-blue-100 rounded-lg">
@@ -312,7 +309,7 @@
             </div>
           </div>
 
-          <!-- Número de Transações -->
+      
           <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center">
               <div class="p-2 bg-yellow-100 rounded-lg">
@@ -343,7 +340,7 @@
           </div>
         </div>
 
-        <!-- Filtros -->
+   
         <div class="bg-white rounded-lg shadow p-6 mb-8">
           <h3 class="text-lg font-medium text-gray-900 mb-4">Filtros</h3>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -386,7 +383,7 @@
           </div>
         </div>
 
-        <!-- Transactions List -->
+      
         <div class="bg-white rounded-lg shadow">
           <div class="px-6 py-4 border-b border-gray-200">
             <div class="flex items-center justify-between">
@@ -441,7 +438,7 @@
           </div>
           <div class="p-6">
             <div id="transactionsList" class="space-y-4">
-              <!-- Loading state -->
+            
               <div id="loadingState" class="text-center py-8">
                 <div
                   class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto"
@@ -454,7 +451,7 @@
       </main>
     </div>
 
-    <!-- Modal para Nova/Editar Transação -->
+  
     <div
       id="transactionModal"
       class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50"
@@ -538,7 +535,6 @@
       </div>
     </div>
 
-    <!-- Modal para Gerenciar Tipos de Transação -->
     <div
       id="typesModal"
       class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50"
@@ -552,7 +548,7 @@
           </h3>
         </div>
 
-        <!-- Formulário para novo tipo -->
+    
         <div class="p-6 border-b border-gray-200">
           <h4 class="text-md font-medium text-gray-900 mb-4">
             Adicionar Novo Tipo
@@ -602,13 +598,13 @@
           </form>
         </div>
 
-        <!-- Lista de tipos existentes -->
+   
         <div class="p-6 max-h-96 overflow-y-auto">
           <h4 class="text-md font-medium text-gray-900 mb-4">
             Tipos Existentes
           </h4>
 
-          <!-- Seção de Receitas -->
+      
           <div class="mb-6">
             <h5
               class="text-sm font-semibold text-green-700 mb-3 flex items-center"
@@ -632,11 +628,11 @@
               id="incomeTypesList"
               class="space-y-2 pl-4 border-l-2 border-green-200"
             >
-              <!-- Income types will be loaded here -->
+             
             </div>
           </div>
 
-          <!-- Seção de Despesas -->
+         
           <div>
             <h5
               class="text-sm font-semibold text-red-700 mb-3 flex items-center"
@@ -660,7 +656,7 @@
               id="expenseTypesList"
               class="space-y-2 pl-4 border-l-2 border-red-200"
             >
-              <!-- Expense types will be loaded here -->
+             
             </div>
           </div>
         </div>
@@ -677,7 +673,7 @@
       </div>
     </div>
 
-    <!-- Modal para Editar Usuário -->
+
     <div
       id="userModal"
       class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50"
@@ -779,7 +775,7 @@
       </div>
     </div>
 
-    <!-- Loading Overlay -->
+ 
     <div
       id="loadingOverlay"
       class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50"
@@ -794,7 +790,7 @@
       </div>
     </div>
 
-    <!-- JavaScript -->
+
     <script src="api.js"></script>
     <script src="users.js"></script>
     <script src="transaction-types.js"></script>
