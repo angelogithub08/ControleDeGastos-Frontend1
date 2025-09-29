@@ -1,8 +1,3 @@
-// ==================== CONTROLE DE GASTOS - SCRIPT PRINCIPAL ====================
-// Este arquivo coordena a inicialização e integração dos módulos da aplicação
-
-// ==================== UTILITÁRIOS GLOBAIS ====================
-
 function formatLargeNumber(value) {
   const num = Math.abs(value);
 
@@ -35,7 +30,6 @@ function formatCurrencyWithAbbreviation(value, useAbbreviation = false) {
     return `${isNegative ? "-" : ""}R$ ${formattedValue}`;
   }
 
-  // Usar a função formatCurrency do api.js para formatação padrão
   return formatCurrency(value);
 }
 
@@ -48,7 +42,7 @@ function updateDashboard(balanceData = null) {
   const transactionCount = document.getElementById("transactionCount");
 
   if (balanceData) {
-    // Usar formatação com abreviações para valores grandes
+    
     totalIncome.textContent = formatCurrencyWithAbbreviation(
       balanceData.total_income,
       true
@@ -61,7 +55,7 @@ function updateDashboard(balanceData = null) {
     const balanceValue = parseFloat(balanceData.balance);
     balance.textContent = formatCurrencyWithAbbreviation(balanceValue, true);
 
-    // Colorir saldo baseado no valor
+   
     if (balanceValue > 0) {
       balance.className = "text-2xl font-semibold text-green-600";
     } else if (balanceValue < 0) {
@@ -71,7 +65,7 @@ function updateDashboard(balanceData = null) {
     }
   }
 
-  // Sempre mostrar o total de transações (não filtradas) com formatação
+  
   const count = transactions.length;
   transactionCount.textContent =
     count >= 1000 ? formatLargeNumber(count) : count.toString();
@@ -82,7 +76,7 @@ function updateDashboard(balanceData = null) {
 function updateUI() {
   updateUserUI();
   updateTransactionTypeSelects();
-  // renderTransactions() será chamado por loadInitialPage() se necessário
+
 }
 
 // ==================== INICIALIZAÇÃO ====================
@@ -90,7 +84,7 @@ function updateUI() {
 async function initApp() {
   console.log("Inicializando aplicação...");
 
-  // Verificar se há token salvo
+
   if (api.isAuthenticated()) {
     try {
       await loadUserData();
@@ -107,12 +101,12 @@ async function initApp() {
 }
 
 function setupEventListeners() {
-  // Configurar event listeners de cada módulo
+
   setupUserEventListeners();
   setupTransactionTypesEventListeners();
   setupTransactionsEventListeners();
 
-  // Event listeners globais
+ 
   setupGlobalEventListeners();
 }
 
@@ -121,7 +115,7 @@ function setupGlobalEventListeners() {
   const typesModal = document.getElementById("typesModal");
   const userModal = document.getElementById("userModal");
 
-  // Fechar modais com ESC
+ 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       if (!transactionModal.classList.contains("hidden"))
@@ -134,7 +128,7 @@ function setupGlobalEventListeners() {
 
 // ==================== FUNÇÕES GLOBAIS EXPOSTAS ====================
 
-// Expor funções que precisam ser acessíveis globalmente
+
 window.updateDashboard = updateDashboard;
 window.updateUI = updateUI;
 window.formatLargeNumber = formatLargeNumber;
@@ -142,5 +136,4 @@ window.formatCurrencyWithAbbreviation = formatCurrencyWithAbbreviation;
 
 // ==================== INICIALIZAÇÃO DA APLICAÇÃO ====================
 
-// Inicializar aplicação quando DOM estiver carregado
 document.addEventListener("DOMContentLoaded", initApp);
