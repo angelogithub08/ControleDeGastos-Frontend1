@@ -1,10 +1,10 @@
 // ==================== GERENCIAMENTO DE TRANSAÇÕES ====================
 
-// Estado das transações
+
 let transactions = [];
 let filteredTransactions = [];
 
-// Controle de paginação
+
 let currentPage = 0;
 let itemsPerPage = 10;
 let displayedTransactions = [];
@@ -15,7 +15,7 @@ let hasMoreTransactions = true;
 async function loadTransactions(reset = true) {
   try {
     if (reset) {
-      // Reset pagination when loading fresh data
+     
       currentPage = 0;
       displayedTransactions = [];
       hasMoreTransactions = true;
@@ -28,7 +28,7 @@ async function loadTransactions(reset = true) {
       loadInitialPage();
     }
 
-    // Atualizar contador após carregar transações
+   
     updateDashboard();
   } catch (error) {
     console.error("Erro ao carregar transações:", error);
@@ -36,7 +36,7 @@ async function loadTransactions(reset = true) {
     filteredTransactions = [];
     displayedTransactions = [];
     hasMoreTransactions = false;
-    // Atualizar contador mesmo em caso de erro
+   
     updateDashboard();
     renderTransactions();
   }
@@ -141,7 +141,7 @@ function renderTransactions() {
     })
     .join("");
 
-  // Adicionar botão "Carregar Mais" se houver mais transações
+  
   const loadMoreButton = hasMoreTransactions
     ? `
     <div class="text-center py-6">
@@ -188,7 +188,7 @@ function applyFilters() {
     return matchesType && matchesCategory;
   });
 
-  // Reset pagination when applying filters
+ 
   loadInitialPage();
   updateDashboard();
 }
@@ -199,10 +199,10 @@ function clearAllFilters() {
 
   filterType.value = "";
   filterCategory.value = "";
-  // Atualizar o select de tipos para mostrar todos os tipos
+ 
   updateFilterTypeSelect();
   filteredTransactions = [...transactions];
-  // Reset pagination when clearing filters
+ 
   loadInitialPage();
   updateDashboard();
 }
@@ -223,22 +223,22 @@ function openTransactionModal(transaction = null) {
   const transactionValue = document.getElementById("transactionValue");
   const saveTransactionBtn = document.getElementById("saveTransactionBtn");
 
-  // Verificar se os tipos de transação estão carregados
+  
   if (!transactionTypes || transactionTypes.length === 0) {
     console.warn("Tipos de transação não carregados. Carregando...");
     loadTransactionTypes().then(() => {
-      // Tentar abrir o modal novamente após carregar os tipos
+      
       openTransactionModal(transaction);
     });
     return;
   }
 
   if (transaction) {
-    // Modo edição
+   
     transactionModalTitle.textContent = "Editar Transação";
     transactionId.value = transaction.id;
 
-    // Encontrar o tipo da transação para definir o filtro
+    
     const transactionType = transactionTypes.find(
       (t) => t.id === transaction.transaction_type_id
     );
@@ -253,7 +253,6 @@ function openTransactionModal(transaction = null) {
     );
     saveTransactionBtn.textContent = "Atualizar";
   } else {
-    // Modo criação
     transactionModalTitle.textContent = "Nova Transação";
     transactionForm.reset();
     transactionId.value = "";
@@ -303,16 +302,16 @@ async function handleTransactionSubmit(e) {
     };
 
     if (id) {
-      // Atualizar transação existente
+     
       await api.updateTransaction(parseInt(id), transactionData);
       showNotification("Transação atualizada com sucesso!");
     } else {
-      // Criar nova transação
+     
       await api.createTransaction(transactionData);
       showNotification("Transação criada com sucesso!");
     }
 
-    // Recarregar dados
+ 
     await Promise.all([loadTransactions(), loadBalance()]);
 
     closeTransactionModal();
@@ -323,7 +322,7 @@ async function handleTransactionSubmit(e) {
   }
 }
 
-// Função global para editar transação
+
 window.editTransaction = async function (id) {
   try {
     const transaction = await api.getTransaction(id);
@@ -333,7 +332,7 @@ window.editTransaction = async function (id) {
   }
 };
 
-// Função global para excluir transação
+
 window.deleteTransaction = async function (id) {
   if (!confirm("Tem certeza que deseja excluir esta transação?")) {
     return;
@@ -345,7 +344,7 @@ window.deleteTransaction = async function (id) {
     await api.deleteTransaction(id);
     showNotification("Transação excluída com sucesso!");
 
-    // Recarregar dados
+   
     await Promise.all([loadTransactions(), loadBalance()]);
   } catch (error) {
     handleApiError(error, "Erro ao excluir transação");
@@ -357,16 +356,16 @@ window.deleteTransaction = async function (id) {
 // ==================== MÁSCARA MONETÁRIA ====================
 
 function formatCurrencyInput(value) {
-  // Remove tudo que não é dígito
+ 
   let numbers = value.replace(/\D/g, "");
 
-  // Se não há números, retorna vazio
+  
   if (!numbers) return "";
 
-  // Converte para número e divide por 100 para ter centavos
+ 
   let amount = parseInt(numbers) / 100;
 
-  // Formata como moeda brasileira
+
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
@@ -375,13 +374,13 @@ function formatCurrencyInput(value) {
 }
 
 function parseCurrencyInput(value) {
-  // Remove tudo que não é dígito
+ 
   let numbers = value.replace(/\D/g, "");
 
-  // Se não há números, retorna 0
+ 
   if (!numbers) return 0;
 
-  // Converte para número e divide por 100 para ter centavos
+  
   return parseInt(numbers) / 100;
 }
 
@@ -393,21 +392,21 @@ function applyCurrencyMask(input) {
 
     e.target.value = newValue;
 
-    // Ajustar posição do cursor
+  
     const newCursorPosition =
       cursorPosition + (newValue.length - oldValue.length);
     e.target.setSelectionRange(newCursorPosition, newCursorPosition);
   });
 
   input.addEventListener("focus", function (e) {
-    // Se o campo estiver vazio, adicionar R$ 0,00
+   
     if (!e.target.value) {
       e.target.value = "R$ 0,00";
     }
   });
 
   input.addEventListener("blur", function (e) {
-    // Se o valor for R$ 0,00, limpar o campo
+   
     if (e.target.value === "R$ 0,00") {
       e.target.value = "";
     }
@@ -425,27 +424,27 @@ function setupTransactionsEventListeners() {
   const filterType = document.getElementById("filterType");
   const clearFilters = document.getElementById("clearFilters");
 
-  // Botões principais
+  
   addTransactionBtn.addEventListener("click", () => openTransactionModal());
 
-  // Modal de transação
+ 
   cancelTransactionBtn.addEventListener("click", closeTransactionModal);
   transactionForm.addEventListener("submit", handleTransactionSubmit);
 
-  // Aplicar máscara monetária ao campo de valor
+  
   applyCurrencyMask(transactionValue);
 
-  // Filtros
+  
   filterType.addEventListener("change", applyFilters);
   clearFilters.addEventListener("click", clearAllFilters);
 
-  // Fechar modal clicando fora
+ 
   transactionModal.addEventListener("click", (e) => {
     if (e.target === transactionModal) closeTransactionModal();
   });
 }
 
-// Expor funções globais necessárias
+
 window.transactions = transactions;
 window.filteredTransactions = filteredTransactions;
 window.displayedTransactions = displayedTransactions;
