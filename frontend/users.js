@@ -1,6 +1,5 @@
 // ==================== GERENCIAMENTO DE USUÁRIOS ====================
 
-// Estado dos usuários
 let currentUser = null;
 
 // ==================== AUTENTICAÇÃO ====================
@@ -71,7 +70,7 @@ async function handleRegister(e) {
 
     await api.register(name, email, password);
 
-    // Após registro, fazer login automaticamente
+   
     await api.login(email, password);
     await loadUserData();
     showMainApp();
@@ -111,10 +110,10 @@ async function loadUserData() {
   try {
     showLoading(true);
 
-    // Carregar dados do usuário atual
+  
     currentUser = await api.getCurrentUser();
 
-    // Carregar dados da aplicação
+    
     await Promise.all([
       loadTransactionTypes(),
       loadTransactions(),
@@ -166,7 +165,7 @@ function openUserModal() {
     return;
   }
 
-  // Preencher formulário com dados atuais
+ 
   userId.value = currentUser.id;
   userName.value = currentUser.name;
   userEmail.value = currentUser.email;
@@ -197,26 +196,26 @@ async function handleUserSubmit(e) {
   const password = formData.get("password");
   const passwordConfirm = formData.get("passwordConfirm");
 
-  // Validações
+ 
   if (!name || !email) {
     showNotification("Por favor, preencha nome e e-mail.", "error");
     return;
   }
 
-  // Validar e-mail
+ 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     showNotification("Por favor, insira um e-mail válido.", "error");
     return;
   }
 
-  // Se senha foi informada, validar confirmação
+ 
   if (password && password !== passwordConfirm) {
     showNotification("As senhas não coincidem.", "error");
     return;
   }
 
-  // Validar tamanho da senha se informada
+  
   if (password && password.length < 6) {
     showNotification("A senha deve ter pelo menos 6 caracteres.", "error");
     return;
@@ -230,18 +229,18 @@ async function handleUserSubmit(e) {
       email,
     };
 
-    // Incluir senha apenas se foi informada
+   
     if (password) {
       userData.password = password;
     }
 
     await api.updateUser(currentUser.id, userData);
 
-    // Atualizar dados do usuário atual
+   
     currentUser.name = name;
     currentUser.email = email;
 
-    // Atualizar UI
+    
     updateUserUI();
 
     showNotification("Perfil atualizado com sucesso!");
